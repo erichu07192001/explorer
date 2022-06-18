@@ -6,11 +6,13 @@ const Search = () => {
 
     // Variables
     const [data, setData] = useState([])
+    const [isLoading, setLoading] = useState(true);
+    const [tempLocation, setTempLocation] = useState([])
     const [location, setLocation] = useState([])
 
     const getRepos = async () => {
         try {
-            const response = await fetch('https://api.github.com/users/' + username + '/repos');
+            const response = await fetch("http://api.weatherapi.com/v1/current.json?key=dab7f57ce9c6486e983182326211606&q="+location+"&aqi=no");
             const json = await response.json();
             setData(json);
         } catch (error) {
@@ -29,20 +31,20 @@ const Search = () => {
             <TextInput
                 style={{ height: 40 }}
                 placeholder="Enter your location"
-                onChangeText={newText => setLocation(newText)}
+                onChangeText={newText => setTempLocation(newText)}
                 defaultValue={location}
             />
 
             <Button
                 title="Search"
                 onPress={() => {
-                    setLocation(location);
+                    setLocation(tempLocation);
                 }}
             />
 
-            {/* <Text>{JSON.stringify(data)}</Text> */}
+            <Text>{JSON.stringify(data)}</Text>
 
-            {isLoading ? <ActivityIndicator /> : (
+            {/* {isLoading ? <ActivityIndicator /> : (
                 <FlatList
                     data={data}
                     keyExtractor={({ id }, index) => id}
@@ -51,9 +53,9 @@ const Search = () => {
 
                     )}
                 />
-            )}
+            )} */}
         </View>
     )
 }
 
-export default GitHubDemo
+export default Search
