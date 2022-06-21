@@ -32,7 +32,6 @@ const Search = () => {
                 style={{ height: 40 }}
                 placeholder="Enter your location"
                 onChangeText={newText => setTempLocation(newText)}
-                defaultValue={location}
             />
 
             <Button
