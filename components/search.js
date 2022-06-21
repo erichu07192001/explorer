@@ -5,16 +5,16 @@ import { Text, View, TextInput, ActivityIndicator, FlatList, Button } from 'reac
 const Search = () => {
 
     // Variables
-    const [data, setData] = useState([])
+    const [weather, setWeather] = useState([])
     const [isLoading, setLoading] = useState(true);
     const [tempLocation, setTempLocation] = useState([])
-    const [location, setLocation] = useState([])
+    const [location, setLocation] = useState('waltham')
 
     const getWeather = async () => {
         try {
             const response = await fetch("http://api.weatherapi.com/v1/current.json?key=dab7f57ce9c6486e983182326211606&q="+location+"&aqi=no");
             const json = await response.json();
-            setData(json);
+            setWeather(json);
         } catch (error) {
             console.error(error);
         } finally {
@@ -42,7 +42,7 @@ const Search = () => {
                 }}
             />
 
-            <Text>{JSON.stringify(data)}</Text>
+            <Text>{JSON.stringify(weather)}</Text>
 
             {/* {isLoading ? <ActivityIndicator /> : (
                 <FlatList
