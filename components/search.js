@@ -21,11 +21,6 @@ const Search = () => {
     const [tempLocation, setTempLocation] = useState([])
     const [location, setLocation] = useState('waltham')
 
-    // Variables used for coordinates for other API
-    const[longitude, setLongitude] = useState([])
-    const[latitude, setLatitude] = useState([])
-
-
     const getWeather = async () => {
         try {
             const response = await fetch("http://api.weatherapi.com/v1/current.json?key=" + weatherAPIKey + "&q="+location+"&aqi=no");
@@ -85,15 +80,6 @@ const Search = () => {
     //     }
     // }
 
-
-    // Sets the coordinates for the yelpAPI
-    const setCoordinates = () => {
-        setLongitude(weather.location?.lon) // setting the longitude
-        setLatitude(weather.location?.lat) // Setting the latitude
-        console.log("Longitude: " + longitude)
-        console.log("Latitude: " + latitude)
-    }
-
     // Ask user for location
     useEffect(() => {
         (async () => {
@@ -105,15 +91,11 @@ const Search = () => {
     
           let phoneLocation = await Location.getCurrentPositionAsync({});
           console.log(phoneLocation);
-          setLatitude(phoneLocation.coords.latitude)
-          setLongitude(phoneLocation.coords.longitude)
           setLocation(phoneLocation.coords.latitude + "," + phoneLocation.coords.longitude)
         })();
       }, []);
 
     useEffect(() => { getWeather() }, [location]) // Update weather when location is changed
-
-    // useEffect(() => {setCoordinates()}, [weather]) // Updates the coordinates when the weather data is changed
 
     useEffect(() => {getResturants()}, [weather])
     return (
@@ -138,7 +120,6 @@ const Search = () => {
 
             <Text>{location}</Text>
             <Text>In {JSON.stringify(weather.location?.name)}, it's currently {JSON.stringify(weather.current?.temp_f)} °F ({JSON.stringify(weather.current?.temp_c)} °C) and {JSON.stringify(weather.current?.condition.text)}</Text>
-            <Text>latitude: {latitude} and longitude: {longitude}</Text>
             <Text>{JSON.stringify(resturants)}</Text>
         </View>
     )
