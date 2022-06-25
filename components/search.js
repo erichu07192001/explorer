@@ -41,34 +41,49 @@ const Search = () => {
         }
     }
 
-    // Get resturants, code taken from postman
     const getResturants = async () => {
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", "Bearer " + yelpFustionAPIKey);
+        try {
+            const response = await fetch("https://yelp-backend.netlify.app/.netlify/functions/search?location=" + location + "&term=food");
+            const json = await response.json();
+            setResturants(json); // Setting the resturant data
 
-        var requestOptions = {
-        method: 'GET',
-        headers: myHeaders,
-        redirect: 'follow'
-        };
-
-        try{
-        const response = await fetch("https://api.yelp.com/v3/businesses/search?latitude=" + latitude + "&longitude=" + longitude, requestOptions)
-        .then(response => response.text())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error));
-
-        const json = await response.json();
-        setResturants(json); // Setting the resturant data
-        setError(false)
-
-        }catch (error) {
+            setError(false)
+        } catch (error) {
             console.error(error);
             setError(true)
         } finally {
             setLoading(false);
         }
     }
+
+    // // Get resturants, code taken from postman
+    // const getResturants = async () => {
+    //     var myHeaders = new Headers();
+    //     myHeaders.append("Authorization", "Bearer " + yelpFustionAPIKey);
+
+    //     var requestOptions = {
+    //     method: 'GET',
+    //     headers: myHeaders,
+    //     redirect: 'follow'
+    //     };
+
+    //     try{
+    //     const response = await fetch("https://api.yelp.com/v3/businesses/search?latitude=" + latitude + "&longitude=" + longitude, requestOptions)
+    //     .then(response => response.text())
+    //     .then(result => console.log(result))
+    //     .catch(error => console.log('error', error));
+
+    //     const json = await response.json();
+    //     setResturants(json); // Setting the resturant data
+    //     setError(false)
+
+    //     }catch (error) {
+    //         console.error(error);
+    //         setError(true)
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // }
 
 
     // Sets the coordinates for the yelpAPI
@@ -98,8 +113,9 @@ const Search = () => {
 
     useEffect(() => { getWeather() }, [location]) // Update weather when location is changed
 
-    useEffect(() => {setCoordinates()}, [weather]) // Updates the coordinates when the weather data is changed
+    // useEffect(() => {setCoordinates()}, [weather]) // Updates the coordinates when the weather data is changed
 
+    useEffect(() => {getResturants()}, [weather])
     return (
 
         <View style={{ flex: 1, padding: 24 }}>
