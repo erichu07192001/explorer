@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View, TextInput, ActivityIndicator, FlatList, Button } from 'react-native';
-
+import * as Location from 'expo-location';
 
 const Search = () => {
 
@@ -79,6 +79,23 @@ const Search = () => {
         console.log("Latitude: " + latitude)
     }
 
+    // Ask user for location
+    useEffect(() => {
+        (async () => {
+          let { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== 'granted') {
+            setErrorMsg('Permission to access location was denied');
+            return;
+          }
+    
+          let phoneLocation = await Location.getCurrentPositionAsync({});
+          console.log(phoneLocation);
+          setLatitude(phoneLocation.coords.latitude)
+          setLongitude(phoneLocation.coords.longitude)
+          setLocation(phoneLocation.coords.latitude + "," + phoneLocation.coords.longitude)
+        })();
+      }, []);
+
     useEffect(() => { getWeather() }, [location]) // Update weather when location is changed
 
     useEffect(() => {setCoordinates()}, [weather]) // Updates the coordinates when the weather data is changed
@@ -103,10 +120,9 @@ const Search = () => {
                 }}
             />
 
-
+            <Text>{location}</Text>
             <Text>In {JSON.stringify(weather.location?.name)}, it's currently {JSON.stringify(weather.current?.temp_f)} °F ({JSON.stringify(weather.current?.temp_c)} °C) and {JSON.stringify(weather.current?.condition.text)}</Text>
             <Text>latitude: {latitude} and longitude: {longitude}</Text>
-            <br></br>
             <Text>{JSON.stringify(resturants)}</Text>
         </View>
     )
