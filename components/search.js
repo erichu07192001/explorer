@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, TextInput, ActivityIndicator, FlatList, Button } from 'react-native';
-import * as Location from 'expo-location';
+import { Text, View, TextInput, ActivityIndicator, FlatList, Button, SafeAreaView, Image } from 'react-native'; // 
+import styles from '../Style';
+import * as Location from 'expo-location'; // Used to ask user for location
 
 const Search = () => {
 
@@ -40,7 +41,7 @@ const Search = () => {
         try {
             const response = await fetch("https://yelp-backend.netlify.app/.netlify/functions/search?location=" + location + "&term=food");
             const json = await response.json();
-            setResturants(json); // Setting the resturant data
+            setResturants(json.businesses); // Setting the resturant data
 
             setError(false)
         } catch (error) {
@@ -100,10 +101,11 @@ const Search = () => {
     useEffect(() => {getResturants()}, [weather])
     return (
 
-        <View style={{ flex: 1, padding: 24 }}>
+        <SafeAreaView style = {styles.container}>
+            <Text>Welcome to Explorer!</Text>
             <Text>Enter a location to find the weather</Text>
             <TextInput
-                style={{ height: 40 }}
+                style={{ height: 80 }}
                 placeholder="Enter your location"
                 onChangeText={
                     newText => setTempLocation(newText)
@@ -114,14 +116,42 @@ const Search = () => {
                 title="Search"
                 onPress={() => {
                     setLocation(tempLocation);
-                    getResturants()
                 }}
             />
 
-            <Text>{location}</Text>
+            
+            {/* <Text>{location}</Text> */}
             <Text>In {JSON.stringify(weather.location?.name)}, it's currently {JSON.stringify(weather.current?.temp_f)} °F ({JSON.stringify(weather.current?.temp_c)} °C) and {JSON.stringify(weather.current?.condition.text)}</Text>
-            <Text>{JSON.stringify(resturants)}</Text>
-        </View>
+            
+            {console.log("Display Flatlist")}
+            
+            <FlatList
+                data={resturants}
+                keyExtractor={({ id }, index) => id}
+                renderItem={({ item }) => (
+                    // Safe view to show image on right
+                    <SafeAreaView style = {styles.splitscreen}> 
+                        
+                        <View>
+                            <a href={item.url}>{item.name}</a>
+                            <Text>{item.location.address1} {item.location.city} {item.location.state}</Text>
+                        </View>
+                            
+
+                        <Image 
+                            style={styles.pic}
+                            source={{uri: item.image_url}} 
+                        />
+                        
+                        
+                    </SafeAreaView>
+                    
+                )}
+            /> 
+            
+
+            {/* <Text>{JSON.stringify(resturants)}</Text> */}
+        </SafeAreaView>
     )
 }
 
