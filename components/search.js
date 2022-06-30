@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Text, View, TextInput, ActivityIndicator, FlatList, Button, SafeAreaView, Image } from 'react-native'; // 
 import styles from '../Style';
 import * as Location from 'expo-location'; // Used to ask user for location
+import weatherAPI from '../APIs/Weather'
 
 const Search = () => {
 
@@ -11,7 +12,7 @@ const Search = () => {
     const [resturants, setResturants] = useState([])
 
     // API keys
-    const yelpFustionAPIKey = 'dobn60rTc2HtHN-N6qf5EQUd2fiKCrW4KOCYJPJKfWh6r9zlZ-VENmJDyTRjl3NAN5ZOgbsU3LWk7K8Q420YsV6YlYJ8wgobns1Puy3l8EXi45tEwZWrq99riFqzYnYx'
+    
     const weatherAPIKey = 'dab7f57ce9c6486e983182326211606'
 
     // Loading and error checking for the api
@@ -24,9 +25,11 @@ const Search = () => {
 
     const getWeather = async () => {
         try {
-            const response = await fetch("http://api.weatherapi.com/v1/current.json?key=" + weatherAPIKey + "&q="+location+"&aqi=no");
-            const json = await response.json();
-            setWeather(json); // Setting the weather data
+            console.log("trying to set weather")
+            setLoading(true)
+            weatherAPI(location, (x=>setWeather(x)))
+            console.log("Weather properly set")
+            //console.log(JSON.stringify(weather))
 
             setError(false)
         } catch (error) {
@@ -51,35 +54,7 @@ const Search = () => {
             setLoading(false);
         }
     }
-
-    // // Get resturants, code taken from postman
-    // const getResturants = async () => {
-    //     var myHeaders = new Headers();
-    //     myHeaders.append("Authorization", "Bearer " + yelpFustionAPIKey);
-
-    //     var requestOptions = {
-    //     method: 'GET',
-    //     headers: myHeaders,
-    //     redirect: 'follow'
-    //     };
-
-    //     try{
-    //     const response = await fetch("https://api.yelp.com/v3/businesses/search?latitude=" + latitude + "&longitude=" + longitude, requestOptions)
-    //     .then(response => response.text())
-    //     .then(result => console.log(result))
-    //     .catch(error => console.log('error', error));
-
-    //     const json = await response.json();
-    //     setResturants(json); // Setting the resturant data
-    //     setError(false)
-
-    //     }catch (error) {
-    //         console.error(error);
-    //         setError(true)
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // }
+  
 
     // Ask user for location
     useEffect(() => {
@@ -96,13 +71,15 @@ const Search = () => {
         })();
       }, []);
 
-    useEffect(() => { getWeather() }, [location]) // Update weather when location is changed
+    useEffect(() => { getWeather(location) }, [location]) // Update weather when location is changed
 
     useEffect(() => {getResturants()}, [weather])
+
     return (
 
         <SafeAreaView style = {styles.container}>
-            <Text>Welcome to Explorer!</Text>
+            <Text style = {styles.title}>Welcome to Explorer!</Text>
+            <br/>
             <Text>Enter a location to find the weather</Text>
             <TextInput
                 style={{ height: 80 }}
@@ -116,15 +93,18 @@ const Search = () => {
                 title="Search"
                 onPress={() => {
                     setLocation(tempLocation);
+                    //getWeather(location);
                 }}
             />
 
             
             {/* <Text>{location}</Text> */}
+            <br/>
             <Text>In {JSON.stringify(weather.location?.name)}, it's currently {JSON.stringify(weather.current?.temp_f)} °F ({JSON.stringify(weather.current?.temp_c)} °C) and {JSON.stringify(weather.current?.condition.text)}</Text>
-            
+            <Text> {JSON.stringify(weather)} </Text>
             {console.log("Display Flatlist")}
             
+            <br/>
             <FlatList
                 data={resturants}
                 keyExtractor={({ id }, index) => id}

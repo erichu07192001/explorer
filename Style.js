@@ -9,6 +9,7 @@ const styles = StyleSheet.create({
     title:{
       fontSize: 32,
       fontWeight: 'bold',
+      textAlign: 'center',
     },
   
     text:{
@@ -25,7 +26,8 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       padding: 10,
       justifyContent: 'space-Evenly',
-      backgroundColor: 'gray',
+      backgroundColor: '#add8e6',
+      borderWidth: 1,
       borderColor: 'black',
       borderRadius: 20,
     }

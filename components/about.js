@@ -57,13 +57,13 @@ const About = () => {
         }}
       />
  
-      <Text style = {styles.text}>
-      I'm a rising senior at Brandeis University studying Computer Science</Text>
+      <Text style = {styles.text}> I'm a rising senior at Brandeis University studying Computer Science <br />
+      and minoring in Asian American Pacific Islander Studies and Film and Interactive Media
+      </Text>
       </View>
       
      <Text style = {styles.text}>
-     This application takes your location and shows fun activities and resturants around your current position
-    
+     This application ask for the user's location (or they can enter it themselves) and shows fun activities and resturants around the user's location or at the searched location
      </Text>
       
     </View>
