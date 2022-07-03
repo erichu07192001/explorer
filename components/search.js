@@ -1,19 +1,23 @@
+// Import react elements
 import React, { useEffect, useState } from 'react';
 import { Text, View, TextInput, ActivityIndicator, FlatList, Button, SafeAreaView, Image } from 'react-native'; // 
-import styles from '../Style';
+
+// Import Expo elements
 import * as Location from 'expo-location'; // Used to ask user for location
+
+// Import components
+import styles from './Style';
+import searchFunctions from './SearchFunctions'
+// import {useValue} from './ValueStorageContext'
+
+// API calls
 import weatherAPI from '../APIs/Weather'
+import yelpAPI from '../APIs/YelpFusionLamda'
 
 const Search = () => {
-
-    // Variables
     // API data
     const [weather, setWeather] = useState([])
-    const [resturants, setResturants] = useState([])
-
-    // API keys
-    
-    const weatherAPIKey = 'dab7f57ce9c6486e983182326211606'
+    const [activity, setActivity] = useState([])
 
     // Loading and error checking for the api
     const [isLoading, setLoading] = useState(true);
@@ -23,14 +27,15 @@ const Search = () => {
     const [tempLocation, setTempLocation] = useState([])
     const [location, setLocation] = useState('waltham')
 
+    // const [feedbackLocation, setFeedbackLocation] = useValue() // Context for feedback location
+
     const getWeather = async () => {
         try {
             console.log("trying to set weather")
             setLoading(true)
             weatherAPI(location, (x=>setWeather(x)))
             console.log("Weather properly set")
-            //console.log(JSON.stringify(weather))
-
+            console.log(JSON.stringify(weather))
             setError(false)
         } catch (error) {
             console.error(error);
@@ -38,14 +43,16 @@ const Search = () => {
         } finally {
             setLoading(false);
         }
+
+        // setFeedbackLocation({city: city, state: state}) // Setting location to be global for feed back in about
     }
 
-    const getResturants = async () => {
+    const getActivity = async () => {
         try {
-            const response = await fetch("https://yelp-backend.netlify.app/.netlify/functions/search?location=" + location + "&term=food");
-            const json = await response.json();
-            setResturants(json.businesses); // Setting the resturant data
-
+            console.log("trying to set activity")
+            setLoading(true)
+            yelpAPI(location, 'food' ,(x=>setActivity(x)))
+            console.log("activity set")
             setError(false)
         } catch (error) {
             console.error(error);
@@ -54,7 +61,6 @@ const Search = () => {
             setLoading(false);
         }
     }
-  
 
     // Ask user for location
     useEffect(() => {
@@ -71,18 +77,17 @@ const Search = () => {
         })();
       }, []);
 
-    useEffect(() => { getWeather(location) }, [location]) // Update weather when location is changed
+    // Second use effect follows when the first use effect is changed
+    useEffect(() => {getWeather() }, [location]) // Update weather when location is changed
 
-    useEffect(() => {getResturants()}, [weather])
+    useEffect(() => {getActivity()}, [weather]) // Update activity when weather is changed
 
     return (
 
         <SafeAreaView style = {styles.container}>
             <Text style = {styles.title}>Welcome to Explorer!</Text>
-            <br/>
             <Text>Enter a location to find the weather</Text>
             <TextInput
-                style={{ height: 80 }}
                 placeholder="Enter your location"
                 onChangeText={
                     newText => setTempLocation(newText)
@@ -93,28 +98,28 @@ const Search = () => {
                 title="Search"
                 onPress={() => {
                     setLocation(tempLocation);
-                    //getWeather(location);
                 }}
             />
 
             
             {/* <Text>{location}</Text> */}
-            <br/>
             <Text>In {JSON.stringify(weather.location?.name)}, it's currently {JSON.stringify(weather.current?.temp_f)} °F ({JSON.stringify(weather.current?.temp_c)} °C) and {JSON.stringify(weather.current?.condition.text)}</Text>
-            <Text> {JSON.stringify(weather)} </Text>
+            {/* <Text> {JSON.stringify(weather)} </Text> */}
             {console.log("Display Flatlist")}
             
-            <br/>
             <FlatList
-                data={resturants}
+                data={activity}
                 keyExtractor={({ id }, index) => id}
                 renderItem={({ item }) => (
                     // Safe view to show image on right
                     <SafeAreaView style = {styles.splitscreen}> 
                         
                         <View>
-                            <a href={item.url}>{item.name}</a>
-                            <Text>{item.location.address1} {item.location.city} {item.location.state}</Text>
+                            {/* <a href={item.url}>{item.name}</a> */}
+                            <Text>{item.location.address1} </Text>
+                            <Text> {item.location.city} {item.location.state}</Text>
+                            {isClosed(item.isClosed)}
+                            
                         </View>
                             
 
@@ -122,17 +127,28 @@ const Search = () => {
                             style={styles.pic}
                             source={{uri: item.image_url}} 
                         />
-                        
-                        
                     </SafeAreaView>
                     
                 )}
             /> 
             
 
-            {/* <Text>{JSON.stringify(resturants)}</Text> */}
+            {/* <Text>{JSON.stringify(activity)}</Text> */}
         </SafeAreaView>
     )
 }
+
+function isClosed(is_closed){
+    if (is_closed){ // Activity is currently open
+        return(
+            <Text style = {{color: 'red'}}>CLOSED</Text>
+        )
+    }
+    else{
+        return( // Activity is currently closed
+            <Text style = {{color: 'green'}}>OPEN</Text>
+        )
+    }
+} 
 
 export default Search

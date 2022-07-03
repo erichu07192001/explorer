@@ -1,3 +1,5 @@
+// Getting data from WeatherAPI
+
 const weatherAPIKey = 'dab7f57ce9c6486e983182326211606'
 const url = "http://api.weatherapi.com/v1/current.json?"
 

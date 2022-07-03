@@ -1,53 +1,20 @@
 // About the developer page
 
+// Import react native
 import React from 'react';
 import { View,  Button, StyleSheet, Text, Image} from 'react-native';
 
-const styles = StyleSheet.create({
-  containter:{
-    backgroundColor: "#192070", // blue
-    borderRadius: 5,
-    flex: 1
-  },
+// Import from components
+import styles from './Style';
+// import { useValue } from './ValueStorageContext';
 
-  title:{
-    fontSize: 32,
-    fontWeight: 'bold',
-    fontFamily: 'Roboto',
-    textAlign: 'center',
-    color: "white",
-
-    borderRadius: 20,
-  },
-
-  text:{
-    fontSize: 16,
-    fontWeight: 'bold',
-    fontFamily: 'Times',
-    color: 'white',
-    textAlign: 'center',
-  },
-
-  pic: {
-    width: 150,
-    height: 150,
-    borderRadius: 30,
-  },
-
-  splitscreen: {
-    flexDirection: 'row',
-    padding: 10,
-    justifyContent: 'space-Evenly',
-    backgroundColor: 'gray',
-    borderRadius: 20,
-  }
-});
+// const [feedbackLocation] = useValue();
 
 const About = () => {
   return (
     <View style = {styles.containter}>
       <Text style = {styles.title}>Eric Hu</Text>
-      <Text style = {styles.text}>erichu@brandeis.edu</Text>
+      <Text style = {styles.subtitle}>erichu@brandeis.edu</Text>
 
       <View style = {styles.splitscreen}>
       <Image
@@ -57,7 +24,9 @@ const About = () => {
         }}
       />
  
-      <Text style = {styles.text}> I'm a rising senior at Brandeis University studying Computer Science <br />
+      <Text style = {styles.text}>
+      Im a rising senior at Brandeis University 
+      studying Computer Science 
       and minoring in Asian American Pacific Islander Studies and Film and Interactive Media
       </Text>
       </View>
@@ -66,8 +35,22 @@ const About = () => {
      This application ask for the user's location (or they can enter it themselves) and shows fun activities and resturants around the user's location or at the searched location
      </Text>
       
+    {/* <Text>{feedbackLocation.city} {feedbackLocation.state}</Text> */}
     </View>
   );
 }
+
+function isClosed(is_closed){
+  if (is_closed){ // Activity is currently open
+      return(
+          Closed
+      )
+  }
+  else{
+      return( // Activity is currently closed
+          <Text style = {{color: 'green'}}>OPEN</Text>
+      )
+  }
+} 
 
 export default About;	

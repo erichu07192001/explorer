@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+// Getting data from Yelp Fusion API
+// Huge thanks to ProductionCoder for creating a lamda function to get easy access to yelp data
+// Find him here: https://www.youtube.com/watch?v=TtctqhLzfDo
 
 const url = "https://yelp-backend.netlify.app/.netlify/functions/search?"
 
 async function getData (location, term, storeData){
     const response = await fetch(url + "location=" + location + "&term=" + term);
     const json = await response.json();
-    const data = json.businesses
+    const data = json.businesses;
     storeData(data); // Setting the resturant data
 }
+
+export default getData;
 
 // Previous code, need CORS to work
 
