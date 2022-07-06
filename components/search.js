@@ -28,6 +28,10 @@ const Search = () => {
     const [tempLocation, setTempLocation] = useState([])
     const [location, setLocation] = useState('waltham')
 
+    // tempterm allows user to type, while term is what is searched
+    const [tempTerm, setTempTerm] = useState([])
+    const [term, setTerm] = useState('food')
+
     const {currentValue,setCurrentValue} = useValue();
 
     const getWeather = async () => {
@@ -50,7 +54,7 @@ const Search = () => {
         try {
             console.log("trying to set activity")
             setLoading(true)
-            yelpAPI(location, 'food' ,(x=>setActivity(x)))
+            yelpAPI(location, term ,(x=>setActivity(x)))
             console.log("activity set")
             setError(false)
         } catch (error) {
@@ -73,13 +77,14 @@ const Search = () => {
           let phoneLocation = await Location.getCurrentPositionAsync({});
           console.log(phoneLocation);
           setLocation(phoneLocation.coords.latitude + "," + phoneLocation.coords.longitude)
-        })();
-      }, []);
+        })().catch(err => console.error("user denied permission", err)) // In case user denies permission
+      }
+      , []);
 
-    // Second use effect follows when the first use effect is changed
     useEffect(() => {getWeather() }, [location]) // Update weather when location is changed
 
-    useEffect(() => {getActivity()}, [weather]) // Update activity when weather is changed
+    useEffect(() => {getActivity()}, [term]) // Update activity when term is changed
+    useEffect(() => {getActivity()}, [location]) // Update activity when location is changed
 
     useEffect(() => {setCurrentValue({city: weather.location?.name, state: weather.location?.region})}, [weather]) // Update activity when weather is changed
     
@@ -87,7 +92,7 @@ const Search = () => {
 
         <SafeAreaView style = {styles.container}>
             <Text style = {styles.title}>Welcome to Explorer!</Text>
-            <Text> currentValue = {JSON.stringify(currentValue)} </Text>
+            {/* <Text> currentValue = {JSON.stringify(currentValue)} </Text> */}
             <Text>Enter a location to find the weather</Text>
             <TextInput
                 placeholder="Enter your location"
@@ -105,8 +110,23 @@ const Search = () => {
 
             
             {/* <Text>{location}</Text> */}
-            <Text>In {JSON.stringify(weather.location?.name)}, it's currently {JSON.stringify(weather.current?.temp_f)} °F ({JSON.stringify(weather.current?.temp_c)} °C) and {JSON.stringify(weather.current?.condition.text)}</Text>
+           
             {/* <Text> {JSON.stringify(weather)} </Text> */}
+            <Text>Enter a activity you would like to do</Text>
+            <TextInput
+                placeholder="Enter an activity"
+                onChangeText={
+                    newText => setTempTerm(newText)
+                }
+            />
+
+            <Button
+                title="Search"
+                onPress={() => {
+                    setTerm(tempTerm);
+                }}
+            />
+             <Text>In {JSON.stringify(weather.location?.name)}, it's currently {JSON.stringify(weather.current?.temp_f)} °F ({JSON.stringify(weather.current?.temp_c)} °C) and {JSON.stringify(weather.current?.condition.text)}</Text>
             {console.log("Display Flatlist")}
             
             <FlatList
@@ -116,7 +136,7 @@ const Search = () => {
                     // Safe view to show image on right
                     <SafeAreaView style = {styles.splitscreen}>
                         <View>
-                            <Text onPress={() => webBrowser(item.url)}>{item.name}</Text>
+                            <Text onPress={() => webBrowser(item.url)} style = {{color: 'blue'}}>{item.name}</Text>
                             <Text>{item.location.address1} </Text>
                             <Text> {item.location.city} {item.location.state}</Text>
                             {isClosed(item.isClosed)}

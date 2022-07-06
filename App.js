@@ -3,7 +3,8 @@ import React from 'react';
 import ValueProvider from './components/ValueStorageContext';
 
 let data = {city: 'Waltham',
-state: 'MA'
+state: 'MA',
+email: 'erichu@brandeis.edu'
 }
 
 export default function App() {

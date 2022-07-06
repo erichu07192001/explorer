@@ -3,6 +3,7 @@
 // Import react native
 import React from 'react';
 import { View,  Button, StyleSheet, Text, Image} from 'react-native';
+// import {sendFeedback} from './Feedback';
 
 // Import from components
 import styles from './Style';
@@ -11,6 +12,7 @@ import { useValue } from './ValueStorageContext';
 const About = () => {
 
   const {currentValue} = useValue();
+  // const [feedback,setFeedback] = useState("");
 
   return (
     <View style = {styles.containter}>
@@ -37,7 +39,37 @@ const About = () => {
      </Text>
       
      <Text> currentValue = {JSON.stringify(currentValue)} </Text>
+      
+     {/* 
+     Feedback
+     <View>
+            
+            <View style={{flexDirection:'row',justifyContent:'center'}}>
+                <TouchableOpacity
+                    title="send feedback"
+                    style={{fontSize:10}}
+                    onPress = {() => {
+                        console.log('sending feedback....');
+                        sendFeedback(feedback);
+                        setFeedback("")}}
+                    >
+                    <Text>send feedback</Text>
+                </TouchableOpacity>
+            </View>
+            <TextInput 
+               multiline
+               numberOfLines={2}
+               placeholder="feedback"
+               style={{backgroundColor:'lightgreen'}}
+               onChangeText = {(text) => setFeedback(text)}
+               value={feedback}
+            />
+
+        </View> */}
     </View>
+
+    
+    
   );
 }
 
