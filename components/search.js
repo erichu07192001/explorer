@@ -1,6 +1,7 @@
 // Import react elements
 import React, { useEffect, useState } from 'react';
-import { Text, View, TextInput, ActivityIndicator, FlatList, Button, SafeAreaView, Image } from 'react-native'; // 
+import { Text, View, TextInput, ActivityIndicator, FlatList, Button, SafeAreaView, Image } from 'react-native';
+import { Linking} from 'react-native'
 
 // Import Expo elements
 import * as Location from 'expo-location'; // Used to ask user for location
@@ -8,7 +9,7 @@ import * as Location from 'expo-location'; // Used to ask user for location
 // Import components
 import styles from './Style';
 import searchFunctions from './SearchFunctions'
-// import {useValue} from './ValueStorageContext'
+import {useValue} from './ValueStorageContext'
 
 // API calls
 import weatherAPI from '../APIs/Weather'
@@ -27,7 +28,7 @@ const Search = () => {
     const [tempLocation, setTempLocation] = useState([])
     const [location, setLocation] = useState('waltham')
 
-    // const [feedbackLocation, setFeedbackLocation] = useValue() // Context for feedback location
+    const {currentValue,setCurrentValue} = useValue();
 
     const getWeather = async () => {
         try {
@@ -43,8 +44,6 @@ const Search = () => {
         } finally {
             setLoading(false);
         }
-
-        // setFeedbackLocation({city: city, state: state}) // Setting location to be global for feed back in about
     }
 
     const getActivity = async () => {
@@ -82,10 +81,13 @@ const Search = () => {
 
     useEffect(() => {getActivity()}, [weather]) // Update activity when weather is changed
 
+    useEffect(() => {setCurrentValue({city: weather.location?.name, state: weather.location?.region})}, [weather]) // Update activity when weather is changed
+    
     return (
 
         <SafeAreaView style = {styles.container}>
             <Text style = {styles.title}>Welcome to Explorer!</Text>
+            <Text> currentValue = {JSON.stringify(currentValue)} </Text>
             <Text>Enter a location to find the weather</Text>
             <TextInput
                 placeholder="Enter your location"
@@ -112,10 +114,9 @@ const Search = () => {
                 keyExtractor={({ id }, index) => id}
                 renderItem={({ item }) => (
                     // Safe view to show image on right
-                    <SafeAreaView style = {styles.splitscreen}> 
-                        
+                    <SafeAreaView style = {styles.splitscreen}>
                         <View>
-                            {/* <a href={item.url}>{item.name}</a> */}
+                            <Text onPress={() => webBrowser(item.url)}>{item.name}</Text>
                             <Text>{item.location.address1} </Text>
                             <Text> {item.location.city} {item.location.state}</Text>
                             {isClosed(item.isClosed)}
@@ -150,5 +151,10 @@ function isClosed(is_closed){
         )
     }
 } 
+
+const webBrowser = async (url) => {
+    await Linking.canOpenURL(url);
+    Linking.openURL(url).catch(err => console.error("Couldn't load page", err));
+}
 
 export default Search

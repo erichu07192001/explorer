@@ -1,35 +1,17 @@
-import { StatusBar } from 'expo-status-bar';
+import Display from './components/display'
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import About from './components/about'
-import Search from './components/search'
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import ValueProvider from './components/ValueStorageContext';
 
-const Tab = createBottomTabNavigator();
-
-function MyTabs() {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen name="Search" component={Search} />
-      <Tab.Screen name="About" component={About} />
-    </Tab.Navigator>
-  );
+let data = {city: 'Waltham',
+state: 'MA'
 }
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <MyTabs />
-    </NavigationContainer>
+    <ValueProvider value={data} tag="explorer">
+      <Display/>
+    </ValueProvider>
+    
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

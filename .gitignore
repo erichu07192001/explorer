@@ -3,6 +3,7 @@
 .DS_Store
 Android
 ios
+node_modules
 
 # Xcode
 #

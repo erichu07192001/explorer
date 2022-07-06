@@ -6,11 +6,12 @@ import { View,  Button, StyleSheet, Text, Image} from 'react-native';
 
 // Import from components
 import styles from './Style';
-// import { useValue } from './ValueStorageContext';
-
-// const [feedbackLocation] = useValue();
+import { useValue } from './ValueStorageContext';
 
 const About = () => {
+
+  const {currentValue} = useValue();
+
   return (
     <View style = {styles.containter}>
       <Text style = {styles.title}>Eric Hu</Text>
@@ -35,22 +36,9 @@ const About = () => {
      This application ask for the user's location (or they can enter it themselves) and shows fun activities and resturants around the user's location or at the searched location
      </Text>
       
-    {/* <Text>{feedbackLocation.city} {feedbackLocation.state}</Text> */}
+     <Text> currentValue = {JSON.stringify(currentValue)} </Text>
     </View>
   );
 }
-
-function isClosed(is_closed){
-  if (is_closed){ // Activity is currently open
-      return(
-          Closed
-      )
-  }
-  else{
-      return( // Activity is currently closed
-          <Text style = {{color: 'green'}}>OPEN</Text>
-      )
-  }
-} 
 
 export default About;	
