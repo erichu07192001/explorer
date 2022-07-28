@@ -136,7 +136,7 @@ const Search = () => {
                     // Safe view to show image on right
                     <SafeAreaView style = {styles.splitscreen}>
                         <View>
-                            <Text onPress={() => webBrowser(item.url)} style = {{color: 'blue'}}>{item.name}</Text>
+                            <Text onPress={() => window.open(item.url)} style = {{color: 'blue'}}>{item.name}</Text>
                             <Text>{item.location.address1} </Text>
                             <Text> {item.location.city} {item.location.state}</Text>
                             {isClosed(item.isClosed)}
@@ -172,9 +172,9 @@ function isClosed(is_closed){
     }
 } 
 
-const webBrowser = async (url) => {
-    await Linking.canOpenURL(url);
-    Linking.openURL(url).catch(err => console.error("Couldn't load page", err));
-}
+// const webBrowser = async (url) => {
+//     await Linking.canOpenURL(url);
+//     Linking.openURL(url).catch(err => console.error("Couldn't load page", err));
+// }
 
 export default Search
