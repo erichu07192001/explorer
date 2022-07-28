@@ -22,9 +22,7 @@ const About = () => {
       <View style = {styles.splitscreen}>
       <Image
         style={styles.pic}
-        source={{
-          uri: 'https://scontent-sea1-1.xx.fbcdn.net/v/t1.6435-9/60493710_878729542472980_747570192086728704_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=LalAs0eMGTAAX_5GuR8&_nc_ht=scontent-sea1-1.xx&oh=00_AT_tRi8XOzyYBve4kdYFY1N0Pef3wJmrS3LhWtBzECRBEQ&oe=62C57527',
-        }}
+        source={require('../images/developer.jpg')}
       />
  
       <Text style = {styles.text}>
